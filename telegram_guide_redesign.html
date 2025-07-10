@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram 使用指南 - 专业版</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-accent: #4facfe;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(79, 172, 254, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .intro-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--accent-gradient);
+        }
+        
+        .intro-card p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            font-weight: 400;
+        }
+        
+        .sections-grid {
+            display: grid;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        
+        .section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .section:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-heavy);
+            border-color: rgba(79, 172, 254, 0.3);
+        }
+        
+        .section-header {
+            padding: 24px 28px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .section-header:hover {
+            background: rgba(79, 172, 254, 0.1);
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 0 28px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+        
+        .section-content.show {
+            padding: 28px;
+            max-height: 1000px;
+            opacity: 1;
+        }
+        
+        .section-content ol,
+        .section-content ul {
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .section-content li {
+            margin-bottom: 16px;
+            padding-left: 32px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .section-content ol li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .section-content ol {
+            counter-reset: step-counter;
+        }
+        
+        .section-content ul li::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 12px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+        }
+        
+        .section-content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .section-content a {
+            color: var(--text-accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .section-content a:hover {
+            color: #ffffff;
+        }
+        
+        .section-content a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .section-content a:hover::after {
+            width: 100%;
+        }
+        
+        .section-content code {
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-accent);
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        .tip-box {
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .tip-box::before {
+            content: '💡';
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 16px;
+        }
+        
+        .tip-box p {
+            margin: 0;
+            padding-left: 32px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin-top: 80px;
+        }
+        
+        .cta-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--secondary-gradient);
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        .cta-button {
+            background: var(--accent-gradient);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .header {
+                margin-bottom: 40px;
+            }
+            
+            .intro-card,
+            .cta-card {
+                padding: 24px;
+            }
+            
+            .section-header {
+                padding: 20px;
+            }
+            
+            .section-content.show {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Telegram 使用指南</h1>
+            <p class="subtitle">掌握现代化通讯工具，连接更广阔的数字世界</p>
+        </div>
+
+        <div class="intro-card">
+            <p>Telegram 是一款以隐私安全著称的跨平台即时通讯应用。本指南将帮助您快速上手，从注册到高级功能，一站式解决所有问题。</p>
+        </div>
+
+        <div class="sections-grid">
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>下载与注册</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ol>
+                        <li><strong>准备外区账号</strong>：iOS 用户需要使用非中国大陆的 Apple ID 下载应用</li>
+                        <li><strong>配置网络环境</strong>：建议使用美国节点，确保网络连接稳定可靠</li>
+                        <li><strong>准备手机号码</strong>：支持 Google Voice 虚拟号码或国内手机号</li>
+                        <li><strong>完成注册流程</strong>：打开应用，输入手机号码，接收验证码即可完成注册</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>验证码接收问题</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ol>
+                        <li><strong>切换网络节点</strong>：尝试不同的服务器节点，优先选择美国节点</li>
+                        <li><strong>更换网络环境</strong>：切换到不同的网络服务提供商或工具</li>
+                        <li><strong>使用替代号码</strong>：Google Voice 号码通常有更高的成功率</li>
+                    </ol>
+                    <div class="tip-box">
+                        <p>保持耐心，多次尝试不同节点或等待片刻通常能解决验证码问题。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>中文界面设置</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ol>
+                        <li>在浏览器中访问 <a href="https://t.me/zh_CN/483" target="_blank">@zh_CN</a> 官方汉化频道</li>
+                        <li>在 Telegram 搜索框中输入 <code>@zh_cn</code> 找到汉化频道</li>
+                        <li>点击频道内的语言包链接，选择简体中文即可完成汉化</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>添加联系人</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ol>
+                        <li><strong>ID 搜索</strong>：在搜索框输入目标用户的 ID（格式：<code>@username</code>）</li>
+                        <li><strong>二维码添加</strong>：通过扫描对方的 Telegram 二维码快速添加</li>
+                        <li><strong>手机号搜索</strong>：如果对方开启了手机号搜索，可直接通过号码查找</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>解除内容限制</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ol>
+                        <li>访问 <a href="https://web.telegram.org" target="_blank">Telegram 网页版</a></li>
+                        <li>使用注册时的手机号码登录，接收验证码</li>
+                        <li>进入 <strong>Settings</strong> → <strong>Privacy and Security</strong></li>
+                        <li>找到并勾选 <strong>Disable filtering</strong> 选项</li>
+                        <li>保存设置后重启 Telegram 应用</li>
+                    </ol>
+                    <div class="tip-box">
+                        <p>iOS 用户如遇到 "This channel can't be displayed" 提示，按照以上步骤操作即可解除限制。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>常见问题解答</h2>
+                    <div class="section-icon">▼</div>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li><strong>验证码问题</strong>：优先尝试美国节点，考虑使用 Google Voice 号码</li>
+                        <li><strong>群组访问限制</strong>：参考「解除内容限制」章节的详细步骤</li>
+                        <li><strong>账号保留期限</strong>：在设置中可选择 1、3、6、12 个月的保留期限</li>
+                        <li><strong>存储空间管理</strong>：可在「数据和存储」中设置缓存大小上限</li>
+                        <li><strong>隐私设置</strong>：建议开启两步验证，设置强密码保护账户安全</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <div class="cta-card">
+                <p class="cta-text">
+                    在数字化时代，Telegram 为您提供了一个安全、自由的沟通平台。<br>
+                    突破界限，探索更广阔的信息世界，发现属于您的数字生活方式。
+                </p>
+                <a href="https://t.me/zh_CN" target="_blank" class="cta-button">
+                    立即开始使用
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.section-icon');
+            
+            // Close all other sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                if (section !== content) {
+                    section.classList.remove('show');
+                    section.parentElement.querySelector('.section-icon').textContent = '▼';
+                }
+            });
+            
+            // Toggle current section
+            content.classList.toggle('show');
+            icon.textContent = content.classList.contains('show') ? '▲' : '▼';
+        }
+        
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add parallax effect to background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('body::before');
+            const speed = scrolled * 0.5;
+        });
+    </script>
+</body>
+</html>
